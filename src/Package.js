@@ -23,16 +23,19 @@ class Package {
     return this.maxLimit - this.getPackageWeight();
   }
 
+  getResultIndexes() {
+    return this.items
+      .sort((a, b) => a.index - b.index)
+      .map((i) => i.index)
+      .join(",");
+  }
+
   willItemFit(item) {
     const remainingCapacity = this.getRemainingCapacity();
     if (item.weight <= remainingCapacity) {
       return true;
     }
     return false;
-  }
-
-  get size() {
-    return this.items.length;
   }
 
   toString() {
