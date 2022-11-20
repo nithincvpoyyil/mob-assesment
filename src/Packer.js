@@ -2,20 +2,16 @@ const BestFitPack = require("./BestFitPack");
 const Item = require("./shared/models/Item");
 
 class Packer {
-
   static parseInputFile() {
     const newItems = {
-      81: `(1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9)
-    (6,46.34,€48)`,
+      81: `(1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9) (6,46.34,€48)`,
       8: `(1,15.3,€34)`,
-      75: `(1,85.31,€29) (2,14.55,€74) (3,3.98,€16) (4,26.24,€55) (5,63.69,€52)
-    (6,76.25,€75) (7,60.02,€74) (8,93.18,€35) (9,89.95,€78)`,
-      56: `(1,90.72,€13) (2,33.80,€40) (3,43.15,€10) (4,37.97,€16) (5,46.81,€36)
-    (6,48.77,€79) (7,81.80,€45) (8,19.36,€79) (9,6.76,€64)`,
+      75: `(1,85.31,€29) (2,14.55,€74) (3,3.98,€16) (4,26.24,€55) (5,63.69,€52) (6,76.25,€75) (7,60.02,€74) (8,93.18,€35) (9,89.95,€78)`,
+      56: `(1,90.72,€13) (2,33.80,€40) (3,43.15,€10) (4,37.97,€16) (5,46.81,€36) (6,48.77,€79) (7,81.80,€45) (8,19.36,€79) (9,6.76,€64)`,
     };
-
-    const lineItem = newItems[81];
-    const maxLimit = 81;
+    const key = 56;
+    const lineItem = newItems[key];
+    const maxLimit = key;
     const items = lineItem
       .trim("")
       .replaceAll("\n", "")
@@ -28,7 +24,7 @@ class Packer {
       .map((item) => {
         return new Item(+item[0], +item[1], item[2]);
       })
-      .filter((item) => item.weight <= maxLimit) // filter input
+      .filter((item) => item.weight <= maxLimit) // filter input values
       .sort((a, b) => b.weight - a.weight); // decreasing algorithm
 
     return { items, maxLimit };
@@ -43,14 +39,38 @@ class Packer {
   static pack() {
     const { items, maxLimit } = Packer.parseInputFile();
     const packages = Packer.bestFit(items, maxLimit);
+    const selectedPackage = Packer.getBestFromPackages(packages);
+    console.log("-----",selectedPackage,"-----");
     return packages;
+  }
+
+  static getBestFromPackages(packages) {
+    const bestPackageMap = {};
+
+    for (let i = 0; i < packages.length; i++) {
+      const packagedItem = packages[i];
+      const key = packagedItem.getPackageCost();
+
+      const packagedItemWithCost = bestPackageMap[key];
+      if (!packagedItemWithCost) {
+        bestPackageMap[key] = packagedItem;
+      } else if (
+        packagedItemWithCost &&
+        packagedItem.getPackageWeight() <
+          packagedItemWithCost.getPackageWeight()
+      ) {
+        bestPackageMap[key] = packagedItem;
+      }
+    }
+
+    let maxValue = Object.keys(bestPackageMap).sort((a, b) => b - a)[0];
+    let selectedPackage = bestPackageMap[maxValue];
+    return selectedPackage;
   }
 
   static printPackages(packages) {
     packages.map((packageItem) => {
-      console.group("PackItem");
-      console.log(packageItem.items.toString());
-      console.groupEnd("PackItem");
+      console.log(packageItem);
     });
   }
 }
