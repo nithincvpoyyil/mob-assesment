@@ -11,7 +11,7 @@ class Package {
     }
   }
 
-  getPackageCapacity() {
+  getPackageWeight() {
     return this.items.reduce((sum, item) => sum + item.weight, 0);
   }
 
@@ -20,7 +20,7 @@ class Package {
   }
 
   getRemainingCapacity() {
-    return this.maxLimit - this.getPackageCapacity();
+    return this.maxLimit - this.getPackageWeight();
   }
 
   willItemFit(item) {
@@ -36,12 +36,18 @@ class Package {
   }
 
   toString() {
-    console.group("Package");
-    console.log("MaxLimit:", this.maxLimit);
+    let items = [];
     this.items.forEach((item) => {
-      console.log(item.toString());
+      items.push(item.toString());
     });
-    console.groupEnd("Package");
+
+    let stringItem = `
+    
+    package: { 
+      maxLimit:${this.maxLimit},  
+      items: [ ${items.join(" ")} ]
+    }`;
+    return stringItem;
   }
 }
 

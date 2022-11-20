@@ -8,7 +8,11 @@ class Item {
   }
 
   toString() {
-    console.log({ index: this.index, weight: this.weight, cost: this.cost });
+    return JSON.stringify({
+      index: this.index,
+      weight: this.weight,
+      cost: this.cost,
+    });
   }
 }
 module.exports = Item;
