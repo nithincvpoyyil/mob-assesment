@@ -1,5 +1,8 @@
+const fs = require("fs");
+const { open } = fs.promises;
 const BestFitPack = require("./BestFitPack");
-const Item = require("./shared/models/Item");
+const Item = require("./Item");
+const APIException = require("./APIException");
 
 class Packer {
   static parseInputFile() {
@@ -62,19 +65,33 @@ class Packer {
     return packages;
   }
 
-  static pack() {
-    const lines = [
-      `81: (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9) (6,46.34,€48)`,
-      `8: (1,15.3,€34)`,
-      `75: (1,85.31,€29) (2,14.55,€74) (3,3.98,€16) (4,26.24,€55) (5,63.69,€52) (6,76.25,€75) (7,60.02,€74) (8,93.18,€35) (9,89.95,€78)`,
-      `56: (1,90.72,€13) (2,33.80,€40) (3,43.15,€10) (4,37.97,€16) (5,46.81,€36) (6,48.77,€79) (7,81.80,€45) (8,19.36,€79) (9,6.76,€64)`,
-    ];
+  static async pack(inputFilePath, outputFilePath) {
+    let inputFile = null;
+    try {
+      inputFile = await open(inputFilePath);
+    } catch (error) {
+      throw new APIException("input file path invalid");
+    }
+
     const results = [];
-    for (let line of lines) {
+    for await (const line of inputFile.readLines()) {
       const { items, maxLimit } = Packer.getItemsFromInput(line);
       const packages = Packer.bestFit(items, maxLimit);
       const selectedPackage = Packer.getBestFromPackages(packages);
       results.push(selectedPackage);
+    }
+    const resultArray = Packer.toResultArray(results);
+    try {
+      const outputFileWS = fs.createWriteStream(outputFilePath);
+      outputFileWS.once("open", () => {
+        resultArray.forEach((result) => {
+          outputFileWS.write(result);
+          outputFileWS.write("\r\n");
+        });
+        outputFileWS.end();
+      });
+    } catch (err) {
+      throw new APIException("unable to create output file");
     }
     return results;
   }
@@ -109,17 +126,16 @@ class Packer {
     });
   }
 
-  static toResultString(packages) {
-    let resultString = "";
+  static toResultArray(packages) {
+    let resultArray = [];
     packages.map((packageItem) => {
       if (packageItem) {
-        resultString += `${packageItem.getResultIndexes()} \n`;
+        resultArray.push(packageItem.getResultIndexes());
       } else {
-        resultString += "-\n";
+        resultArray.push("-");
       }
     });
-
-    return resultString;
+    return resultArray;
   }
 }
 

@@ -1,4 +1,4 @@
-const Item = require("./shared/models/Item");
+const Item = require("./Item");
 class Package {
   constructor(maxLimit) {
     this.maxLimit = maxLimit;
