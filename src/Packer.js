@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { open } = fs.promises;
 const BestFitBinPack = require("./BestFitBinPack");
-const Item = require("./Item");
+const Item = require("./models/Item");
 const APIException = require("./APIException");
 
 class Packer {
@@ -73,7 +73,7 @@ class Packer {
     } catch (error) {
       throw new APIException("input file path invalid");
     }
-    
+
     for await (const line of inputFile.readLines()) {
       const { items, maxLimit } = Packer.getItemsFromInput(line);
       const packages = Packer.bestFit(items, maxLimit);
