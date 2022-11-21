@@ -4,7 +4,10 @@
   "description": "mobiqk assesment",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
+  },
+  "jest": {
+    "collectCoverage": true
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/nithincvpoyyil/mob-assesment/issues"
   },
-  "homepage": "https://github.com/nithincvpoyyil/mob-assesment#readme"
+  "homepage": "https://github.com/nithincvpoyyil/mob-assesment#readme",
+  "dependencies": {
+    "jest": "^29.3.1"
+  }
 }
