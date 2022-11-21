@@ -5,9 +5,16 @@
  * @extends {Error}
  */
 class APIException extends Error {
-  constructor(message) {
+  /**
+   *Creates an instance of APIException.
+   * @param {string} message
+   * @param {Error} orginalError
+   * @memberof APIException
+   */
+  constructor(message, orginalError) {
     super(message);
     this.name = "APIExceptionError";
+    this.originalError = orginalError;
   }
 }
 

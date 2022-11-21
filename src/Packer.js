@@ -3,6 +3,7 @@ const { open } = fs.promises;
 const BestFitBinPack = require("./BestFitBinPack");
 const Item = require("./models/Item");
 const APIException = require("./exceptions/APIException");
+const ErrorMessages = require("./exceptions/ErrorMessages");
 /**
  * Driver class for exporting packing functionality. This class manages parsing and validation
  * of input file and items for the packages.
@@ -71,14 +72,18 @@ class Packer {
     try {
       inputFile = await open(inputFilePath);
     } catch (error) {
-      throw new APIException("input file path invalid");
+      throw new APIException(ErrorMessages.INPUT_FILE_ERR, error);
     }
 
-    for await (const line of inputFile.readLines()) {
-      const { items, maxLimit } = Packer.getItemsFromInput(line);
-      const packages = Packer.bestFit(items, maxLimit);
-      const selectedPackage = Packer.getBestFromPackages(packages);
-      results.push(selectedPackage);
+    try {
+      for await (const line of inputFile.readLines()) {
+        const { items, maxLimit } = Packer.getItemsFromInput(line);
+        const packages = Packer.bestFit(items, maxLimit);
+        const selectedPackage = Packer.getBestFromPackages(packages);
+        results.push(selectedPackage);
+      }
+    } catch (error) {
+      throw new APIException(ErrorMessages.UNKNOWN, error);
     }
     const resultArray = Packer.toResultArray(results);
     try {
@@ -91,7 +96,7 @@ class Packer {
         outputFileWS.end();
       });
     } catch (err) {
-      throw new APIException("unable to create output file");
+      throw new APIException(ErrorMessages.OUTPUT_FILE_ERR, err);
     }
     return results;
   }
