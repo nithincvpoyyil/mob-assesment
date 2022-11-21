@@ -1,6 +1,6 @@
 const Package = require("./Package");
 
-class BestFitPack {
+class BestFitBinPack {
   constructor(items, limit) {
     this.packages = [];
     this.items = items;
@@ -65,4 +65,4 @@ class BestFitPack {
   }
 }
 
-module.exports = BestFitPack;
+module.exports = BestFitBinPack;

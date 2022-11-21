@@ -1,6 +1,6 @@
 const fs = require("fs");
 const { open } = fs.promises;
-const BestFitPack = require("./BestFitPack");
+const BestFitBinPack = require("./BestFitBinPack");
 const Item = require("./Item");
 const APIException = require("./APIException");
 
@@ -60,20 +60,20 @@ class Packer {
   }
 
   static bestFit(items, maxLimit) {
-    let bestfitPackage = new BestFitPack(items, maxLimit);
+    let bestfitPackage = new BestFitBinPack(items, maxLimit);
     let packages = bestfitPackage.pack();
     return packages;
   }
 
   static async pack(inputFilePath, outputFilePath) {
     let inputFile = null;
+    const results = [];
     try {
       inputFile = await open(inputFilePath);
     } catch (error) {
       throw new APIException("input file path invalid");
     }
-
-    const results = [];
+    
     for await (const line of inputFile.readLines()) {
       const { items, maxLimit } = Packer.getItemsFromInput(line);
       const packages = Packer.bestFit(items, maxLimit);
