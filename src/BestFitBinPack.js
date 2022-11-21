@@ -26,13 +26,13 @@ class BestFitBinPack {
   getPackgeWithLeastSpaceLeft(newItem) {
     let selectedPackage = null;
     for (let i = 0; i < this.packages.length; i++) {
-      let package1 = this.packages[i];
-      let remainingCapacityOfPackage = package1.getRemainingCapacity();
+      let packageItem = this.packages[i];
+      let remainingCapacityOfPackage = packageItem.getRemainingCapacity();
       // package has room left && is this with minimal remianing capacity
-      if (remainingCapacityOfPackage >= 0 && package1.willItemFit(newItem)) {
+      if (remainingCapacityOfPackage >= 0 && packageItem.willItemFit(newItem)) {
         if (selectedPackage === null) {
             selectedPackage = {
-            package: package1,
+            package: packageItem,
             index: i,
             remainingCapacity: remainingCapacityOfPackage,
           };
@@ -40,7 +40,7 @@ class BestFitBinPack {
         // select package with less remaning capacity
         if (selectedPackage.remainingCapacity > remainingCapacityOfPackage) {
           selectedPackage = {
-            package: package1,
+            package: packageItem,
             index: i,
             remainingCapacity: remainingCapacityOfPackage,
           };
@@ -49,10 +49,10 @@ class BestFitBinPack {
         // if 2 bins capacity are equal select package with higher cost
         if (selectedPackage.remainingCapacity === remainingCapacityOfPackage) {
           if (
-            package1.getPackageCost() > selectedPackage.package.getPackageCost()
+            packageItem.getPackageCost() > selectedPackage.package.getPackageCost()
           ) {
             selectedPackage = {
-              package: package1,
+              package: packageItem,
               index: i,
               remainingCapacity: remainingCapacityOfPackage,
             };

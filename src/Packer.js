@@ -2,7 +2,7 @@ const fs = require("fs");
 const { open } = fs.promises;
 const BestFitBinPack = require("./BestFitBinPack");
 const Item = require("./models/Item");
-const APIException = require("./APIException");
+const APIException = require("./exceptions/APIException");
 
 class Packer {
   static parseInputFile() {
