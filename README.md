@@ -39,7 +39,7 @@
 
 ## About The Project
 
-This application a NodeJS library which accepts takes input file path and generate output file with best packages for distribution. This package soltuion is based on `BestFit Decreasing BinPack algorithm`, which is a NP problem in Computer Science.
+This is a NodeJS npm package which takes input file path and generate output file with best package indexes for distribution. This package soltuion is based on `BestFit Decreasing BinPack algorithm`, which is a NP problem in Computer Science.
 Since this is an approximation alogirthm, it `won't yeild the optimal solution` for the problem. reference: <a href="https://www.youtube.com/watch?v=qbuMPi44bVQ" target="_blank"> BinPack algorithms</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
