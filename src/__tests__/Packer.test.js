@@ -40,6 +40,6 @@ describe("Packer", () => {
       `81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9) (6,46.34,€48)`
     );
     expect(result.maxLimit).toBe(81);
-    expect(result.items.length).toBe(5); // yes, its 5; second item is higher than maximum limit
+    expect(result.items.length).toBe(5); // yes, its 5; second item is higher than maximum limit, code  will filter it out
   });
 });
