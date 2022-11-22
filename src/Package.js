@@ -1,4 +1,9 @@
 const Item = require("./models/Item");
+
+const MAX_WEIGHT_LIMIT_OF_ITEM = process.env.MAX_WEIGHT_LIMIT_OF_ITEM || 100;
+const MAX_COST_LIMIT_OF_ITEM = process.env.MAX_COST_LIMIT_OF_ITEM || 100;
+const MAXIMUM_ITEMS = process.env.MAXIMUM_ITEMS || 15;
+
 /**
  * Package class represents Package item
  *
@@ -78,7 +83,14 @@ class Package {
    */
   willItemFit(item) {
     const remainingCapacity = this.getRemainingCapacity();
-    if (item.weight <= remainingCapacity) {
+    if (
+      item.weight <= remainingCapacity &&
+      item.weight <= MAX_WEIGHT_LIMIT_OF_ITEM &&
+      item.numericalCost <= MAX_COST_LIMIT_OF_ITEM &&
+      this.items.length < MAXIMUM_ITEMS
+    ) {
+
+      
       return true;
     }
     return false;
