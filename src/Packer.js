@@ -20,6 +20,9 @@ class Packer {
    * @memberof Packer
    */
   static getItemsFromInput(line) {
+    if (!(line || "").trim().length) {
+      return { maxLimit: 0, items: [] };
+    }
     const lineStringList = line.split(":");
     const maxLimitString = (lineStringList[0] || "").trim();
     const itemsString = (lineStringList[1] || "").trim();
@@ -69,6 +72,7 @@ class Packer {
   static async pack(inputFilePath, outputFilePath) {
     let inputFile = null;
     const results = [];
+    // read input file
     try {
       inputFile = await open(inputFilePath);
     } catch (error) {
@@ -77,22 +81,24 @@ class Packer {
 
     try {
       for await (const line of inputFile.readLines()) {
-        const { items, maxLimit } = Packer.getItemsFromInput(line);
-        const packages = Packer.bestFit(items, maxLimit);
-        const selectedPackage = Packer.getBestFromPackages(packages);
-        results.push(selectedPackage);
+        const { items, maxLimit } = Packer.getItemsFromInput(line); // parse each line from input and get items & package maxLimit
+        const packages = Packer.bestFit(items, maxLimit); // do bestfit packing, and get packages
+        const selectedPackage = Packer.getBestFromPackages(packages); // select best package from list of packages for sending to friend
+        results.push(selectedPackage);// push it results and then process next line of file
       }
     } catch (error) {
       throw new APIException(ErrorMessages.UNKNOWN, error);
     }
+    // to result array for saving to output file
     const resultArray = Packer.toResultArray(results);
 
     try {
+      // added as promised for thrwoing APIException on err of writeStream
       let promise = await new Promise((res, rej) => {
         const outputFileWS = fs.createWriteStream(outputFilePath);
         outputFileWS.once("open", () => {
           resultArray.forEach((result) => {
-            outputFileWS.write(result);
+            outputFileWS.write(result); // write each result to file
             outputFileWS.write("\r\n");
           });
           outputFileWS.end();

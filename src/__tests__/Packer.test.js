@@ -13,7 +13,10 @@ describe("Packer", () => {
 
   test("it throws error invalid output file path", () => {
     expect(() =>
-      Packer.pack(`${process.cwd()}/resources/example_input`, "K:/drive/test.txt")
+      Packer.pack(
+        `${process.cwd()}/resources/example_input`,
+        "K:/drive/test.txt"
+      )
     ).rejects.toThrow(ErrorMessages.OUTPUT_FILE_ERR);
   });
 
@@ -41,6 +44,12 @@ describe("Packer", () => {
     );
     expect(result.maxLimit).toBe(81);
     expect(result.items.length).toBe(5); // yes, its 5; second item is higher than maximum limit, code  will filter it out
+  });
+
+  test("it process empty line string and returns empty items", async () => {
+    const result = Packer.getItemsFromInput(``);
+    expect(result.maxLimit).toBe(0);
+    expect(result.items.length).toBe(0); 
   });
 
   test("it print packages with items", async () => {
