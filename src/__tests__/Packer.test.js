@@ -42,4 +42,13 @@ describe("Packer", () => {
     expect(result.maxLimit).toBe(81);
     expect(result.items.length).toBe(5); // yes, its 5; second item is higher than maximum limit, code  will filter it out
   });
+
+  test("it print packages with items", async () => {
+    const item0 = new Item(0, 5, "€3");
+    const item1 = new Item(1, 4, "€30");
+    const item2 = new Item(2, 5, "€20");
+    const item3 = new Item(3, 4, "€10");
+    const packages = Packer.bestFit([item0, item1, item2, item3], 9);
+    expect(Packer.printPackages(packages)).toBe(true);
+  });
 });

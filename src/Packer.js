@@ -152,6 +152,7 @@ class Packer {
     packages.map((packageItem) => {
       console.log(packageItem);
     });
+    return true;
   }
 
   /**
