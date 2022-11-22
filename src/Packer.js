@@ -86,19 +86,26 @@ class Packer {
       throw new APIException(ErrorMessages.UNKNOWN, error);
     }
     const resultArray = Packer.toResultArray(results);
+
     try {
-      const outputFileWS = fs.createWriteStream(outputFilePath);
-      outputFileWS.once("open", () => {
-        resultArray.forEach((result) => {
-          outputFileWS.write(result);
-          outputFileWS.write("\r\n");
+      let promise = await new Promise((res, rej) => {
+        const outputFileWS = fs.createWriteStream(outputFilePath);
+        outputFileWS.once("open", () => {
+          resultArray.forEach((result) => {
+            outputFileWS.write(result);
+            outputFileWS.write("\r\n");
+          });
+          outputFileWS.end();
+          res(true);
         });
-        outputFileWS.end();
+        outputFileWS.once("error", (err) => {
+          rej(err);
+        });
       });
-    } catch (err) {
-      throw new APIException(ErrorMessages.OUTPUT_FILE_ERR, err);
+      return results;
+    } catch (error) {
+      throw new APIException(ErrorMessages.OUTPUT_FILE_ERR, error);
     }
-    return results;
   }
 
   /**
